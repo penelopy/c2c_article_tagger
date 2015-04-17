@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+ 
+    <head>
+        <!-- <link rel="shortcut icon" href="../favicon.ico"> -->
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="../static/css/default.css" />
+        <!-- <link rel="stylesheet" type="text/css" href="../static/css/component.css" /> -->
+        <link rel="stylesheet" type="text/css" href="../static/css/custom.css" />
+    </head>
+    <body>
+        <div class="container">
+            <header class="clearfix">
+                <span>Click2Care</span>
+                <h1>Article Tagger</h1>
+            </header>   
+                <div class="title_and_link">
+                    <h3>SUMMARY</h3>
+                    <i class="fa fa-link"></i>
+                    <p><a href="{{ article.url }}" name="{{ article.url }}">{{ article.url }}</a></p>
+                </div>
+                <div class="article-text"> 
+                    <p>{{ article.summary_text }}</p>
+                </div>
+
+                <div class="buttons">
+                    <input class="autocomplete-box" type='text' title='Tags' id='input' />
+
+                    <button class="prev" id="prev">Prev</button>
+                    <button class="next" id="next"><a href="/" name="{{ article.url }}">Next</a></button>
+                    <input class="autocomplete-box" type='text' title='Tags' id='output' />
+                </div>
+
+                <div class="tag-listings">
+                    <div class="header3"> TAGS</div>
+                    <ul>
+                         {% for tag in first_tags %}
+                         <li> {{ tag }} </li>
+                         {% endfor %}
+                    </ul>
+                    <ul>
+                         {% for tag in second_tags %}
+                         <li> {{ tag }} </li>
+                         {% endfor %}
+                    </ul>
+                    <ul>
+                         {% for tag in third_tags %}
+                         <li> {{ tag }} </li>
+                         {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>        
+
+          <script>
+
+            var inputObj = document.getElementById("input");
+            var outputObj = document.getElementById("output");
+
+            inputObj.addEventListener("click", clearOutputField);
+            // inputObj.addEventListener("blur", populateOutputField);
+
+            $(document).ready(function() {
+
+                var aTags = ["Poverty", "Clean Water", "Malaria", "Children's Cancer", "Pet Rescue", "Global Warming", "Black Lives Matter", "Girls in Tech", "Veteren Affairs", "Police Violence"];
+
+
+                $( "#input" ).autocomplete({
+                    source: aTags,
+                    select: function (event, ui) { populateOutputField(event, ui) }
+                });
+            });
+
+
+            function clearOutputField() {
+                inputObj.value = '';
+                outputObj.value = '';
+            };
+
+            function populateOutputField(event, ui) {
+                var selectedObj = ui.item;
+                var output = selectedObj.value;
+                // console.log(selectedObj.value);
+
+                outputObj.value = output;
+
+                $.ajax({
+                  type: "POST",
+                  url: '/',
+                  data: {id: output}
+                });
+            };
+
+
+            $("#next").click(function() {
+                console.log("{{ article.url }}")
+                $.ajax({
+                  type: "POST",
+                  url: '/',
+                  data: {id2: "{{ article.url }}"}
+
+                });
+
+            });
+
+          </script>
+    </body>
+</html>
