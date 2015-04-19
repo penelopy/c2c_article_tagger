@@ -29,36 +29,37 @@ for i in range(len(summary_text)):
     article = Article(summary_text[i], summary_urls[i]) # query db and create instance of Article
     list_of_article_objects.append(article)
 
-article0 = list_of_article_objects[1]
+article0 = list_of_article_objects[0]
+
 
 @app.route('/', methods=["GET", "POST"])
 def home_page(): 
-    possible_tags1 = ["Poverty", "Clean Water", "Malaria", "Children's Cancer", "Pet Rescue", "Global Warming", "Black Lives Matter", "Girls in Tech", "Veteren Affairs", "Police Violence"]
-    possible_tags2 = ["Poverty", "Clean Water", "Malaria", "Children's Cancer", "Pet Rescue", "Global Warming", "Black Lives Matter", "Girls in Tech", "Veteren Affairs", "Police Violence"]    
-    possible_tags3 = ["Poverty", "Clean Water", "Malaria", "Children's Cancer", "Pet Rescue", "Global Warming", "Black Lives Matter", "Girls in Tech", "Veteren Affairs", "Police Violence"]    
+    possible_tags1 = ["Poverty", "Clean Water", "Malaria", "Children's Cancer", "Pet Rescue", "Global Warming", "Black Lives Matter", "Girls in Tech"]
+    possible_tags2 = ["Poverty", "Clean Water", "Malaria", "Children's Cancer", "Pet Rescue", "Global Warming", "Black Lives Matter", "Girls in Tech"]    
+    possible_tags3 = ["Poverty", "Clean Water", "Malaria", "Children's Cancer", "Pet Rescue", "Global Warming", "Black Lives Matter"]    
+    possible_tags4 = ["Poverty", "Clean Water", "Malaria", "Children's Cancer", "Pet Rescue", "Global Warming", "Black Lives Matter"]    
 
-    url = request.form.get('id2')
-    print "id2 =", url
-    if url == None: 
-        return render_template("index2.html", article=article0, first_tags = possible_tags1, second_tags = possible_tags2, third_tags = possible_tags3)
-    else:
-        article = next_article()
-        return render_template("index2.html", article=article, first_tags = possible_tags1, second_tags = possible_tags2, third_tags = possible_tags3)
+    url = request.args.get('id2');
+    print ""
+    print "-new page load-"
+    print 'url:', url
+    if url == None:
+        print 'default url'
+        return render_template("index.html", article=article0, first_tags=possible_tags1, second_tags=possible_tags2, third_tags=possible_tags3, fourth_tags=possible_tags4)
+    else: 
+        print 'new url'
+        article1 = next_article(url)
+        print "new article url", article1.url
+        return render_template("index.html", article=article1, first_tags=possible_tags1, second_tags=possible_tags2, third_tags=possible_tags3, fourth_tags=possible_tags4)
 
-def next_article():
-    # if 'next' is clicked
-    print "I got clicked"
-    url = request.form.get('name')
+def next_article(url):
     print url
-    tag_value = request.form.get('id')
-    if tag_value != None:
-        print "value =", tag_value
     if url != None:
         index = summary_urls.index(url)
         next_index = index + 1
-        # new_url = summary_urls[next_index]
         article = list_of_article_objects[next_index]
-        return article 
+        print "next url", article.url
+        return article
 
 
 

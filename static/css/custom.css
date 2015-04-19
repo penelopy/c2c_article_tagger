@@ -5,6 +5,8 @@
     transform: translateX(17%);
     font-size: 20px;
     margin-top: -15px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .tag-listings {
@@ -64,13 +66,14 @@
 }
 
 .title_and_link {
-    margin-left: 170px;
+    /*margin-left: 170px;*/
     font-size: 15px;
-    margin-top: -10px;
-    margin-bottom: 8px; 
+    margin-top: -5px;
+    margin-bottom: -15px; 
 }
 .title_and_link > h3 {
-    display: inline-block;
+    margin-bottom: -10px;
+    /*display: inline-block;*/
 }
 
 .title_and_link > i {
@@ -89,8 +92,13 @@
 .title_and_link > p {
     display: inline-block;
     margin-left: 5px;
+    margin-bottom: 5px;
 }
 .title_and_link > p > a{
     font-weight: bold;
     color: #47a3da;
-}    
+}  
+
+.form1 {
+    display: inline-block;
+}  
