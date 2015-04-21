@@ -7,13 +7,14 @@
     margin-top: -15px;
     padding-left: 5px;
     padding-right: 5px;
+    margin-left: -40px;
 }
 
 .tag-listings {
     background-color: #47a3da;
     height: 300px;
     margin-top: 25px;
-    padding-left: 85px;
+    padding-left: 15px;
     color: white;
 }
 
@@ -28,7 +29,7 @@
 
 .tag-listings > ul {
     display: inline-block;
-    padding-left: 100px;
+    padding-left: 50px;
 }
 .tag-listings > ul >li {
     margin-top: 5px;
@@ -102,3 +103,16 @@
 .form1 {
     display: inline-block;
 }  
+.form2 {
+    display: inline-block;
+}  
+.main{
+    display: inline-block;
+}
+.existing-tags {
+    float: right;
+    margin-right: -310px;
+    margin-top: -300px;
+    font-weight: bold;
+    font-size: 15px;
+}
