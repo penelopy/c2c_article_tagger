@@ -23,10 +23,14 @@
                     </div>
                     <p>{{ article.summary_text }}</p>
                 </div>
-<!--                 <div class="existing-tags">
-                    <h3>EXISTING TAGS:</h3>
-                    {{ list_of_tag_objects }}
-                </div> -->
+                <div class="existing-tags">
+                      <form action="/" method="get" class="form3">
+                      <input type="hidden" name="id4" value='{{article.url}}'><br>
+                      <button type='submit' class="prev" id="skip">Skip to Untagged Article</button>
+                    </form>   
+<!--                     <h3>EXISTING TAGS:</h3>
+                    {{ list_of_tag_objects }} -->
+                </div>
             </div>
 
                 <div class="buttons">
@@ -81,6 +85,12 @@
 
           <script>
 
+            // $( document ).ready(function() {
+
+            //     if {{ article.md5 }} === 'a9b096d15f9a6110b8c08ad5d58904d4';
+            //     $('#next').trigger('click');  
+            // });
+
             var inputObj = document.getElementById("input");
             var outputObj = document.getElementById("output");
 
@@ -112,6 +122,9 @@
                 // var l = document.getElementById('input');
                 // set.Timeout(function() {l.onclick()}, 500);
                 // l.onclick();
+
+
+
 
                 var md5 = "{{ article.md5 }}"
                 $.ajax({
