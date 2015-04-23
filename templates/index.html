@@ -15,15 +15,18 @@
             <div class="main">
                 <div class="article-text"> 
                     <div class="title_and_link">
-                        <h3>SUMMARY</h3>
+                        <h3>URL</h3>
                         <p><a href="{{ article.url}}"> {{ article.url }}</a></p>
+                        <h3>TITLE</h3>
+                        <p>{{article.url.split('/')[-2]}}</p>
+                        <h3>SUMMARY</h3>
                     </div>
                     <p>{{ article.summary_text }}</p>
                 </div>
-                <div class="existing-tags">
+<!--                 <div class="existing-tags">
                     <h3>EXISTING TAGS:</h3>
                     {{ list_of_tag_objects }}
-                </div>
+                </div> -->
             </div>
 
                 <div class="buttons">
@@ -84,6 +87,7 @@
             inputObj.addEventListener("click", clearOutputField);
             // inputObj.addEventListener("blur", populateOutputField);
 
+
             $(document).ready(function() {
                  var aTags =["Supporting Arts & Culture", "Improving Education", "Protecting the Environment", "Animal Welfare", "Improving Health Care", "Women's Health", "Mental Health", "Suicide Prevention", "Diseases", "Curing Cancer", "Curing Breast Cancer", "HIV & Aids", "Autism", "Children's Diseases", "Justice", "Trafficking and Exploitation", "Increasing Jobs", "Feeding the Hungry", "Improving Nutrition", "Affordable Housing", "Disaster Relief", "Recreation & Fitness", "At-Risk Youth", "Domestic Violence Shelters & Services", "Supporting Services for Seniors", "International Economic Development", "International Disaster Relief", "International Social Justice", "Civil Rights & Liberties", "Women's Rights", "LGBT Rights", "Reproductive Rights", "Community Economic Development", "Advancing Science & Technology", "Services for Vets", "Sports", "Skip", "Unclear", "None of the above"];
 
@@ -105,6 +109,9 @@
                 var output = selectedObj.value;
 
                 outputObj.value = output;
+                // var l = document.getElementById('input');
+                // set.Timeout(function() {l.onclick()}, 500);
+                // l.onclick();
 
                 var md5 = "{{ article.md5 }}"
                 $.ajax({

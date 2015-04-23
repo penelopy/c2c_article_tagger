@@ -1,13 +1,6 @@
 from flask import Flask, render_template,request
 import os
-# from model import con
 import sqlite3 as lite
-# import sys
-# import codecs
-
-# lite.connect(":memory:", check_same_thread = False)
-# con = lite.connect('rssfeed.db')
-
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
@@ -22,26 +15,8 @@ def read_data():
         rows = c.fetchall()
         for row in rows: 
             feed_data_list.append(row)
-        print rows[0]
-
-def write_data():
-    con = lite.connect('rssfeed.db')
-    with con:    
-        cur = con.cursor()  
-        cur.execute("INSERT into tags (tag_name) VALUES (tags)")
 
 read_data()
-# write_data()
-
-# with con:    
-#     cur = con.cursor()    
-#     cur.execute("SELECT * FROM Feeds")
-
-#     rows = cur.fetchall()
-#     for row in rows: 
-#         feed_data_list.append(row)
-#     cur.close()
-
 
 list_of_article_objects = []
 
@@ -72,7 +47,7 @@ for article in feed_data_list:
         article_urls.append(url)
 
 for i in range(len(article_summarys)):
-    article = Article(article_summarys[i], article_urls[i], article_md5s[i]) # query db and create instance of Article
+    article = Article(article_summarys[i], article_urls[i], article_md5s[i])
     list_of_article_objects.append(article)
 
 article0 = list_of_article_objects[0]
@@ -80,14 +55,11 @@ article0 = list_of_article_objects[0]
 
 @app.route('/', methods=["GET", "POST"])
 def home_page():  
-    # write_data()
     possible_tags1 = ["Advancing Science & Technology", "Autism", "Children's Diseases", "Curing Breast Cancer", "Curing Cancer", "Diseases", "HIV & Aids", "Improving Health Care"]
     possible_tags2 = ["Improving Nutrition", "Mental Health", "Reproductive Rights", "Suicide Prevention", "Women's Health", "Supporting Services for Seniors", "Recreation & Fitness" ]
     possible_tags3 = ["Affordable Housing", "At-Risk Youth", "Civil Rights & Liberties", "Community Economic Development", "Domestic Violence Shelters & Services", "Feeding the Hungry", "Increasing Jobs", "Justice"]
     possible_tags4 = ["LGBT Rights", "Women's Rights", "Trafficking and Exploitation", "Sports", "Supporting Arts & Culture", "None of the above", "Unclear", "Skip"]
     possible_tags5 = ["Animal Welfare", "Disaster Relief", "Improving Education", "Protecting the Environment", "International Disaster Relief", "International Economic Development", "International Social Justice", "Services for Vets"]
-    # read_data()
-
 
     url = request.args.get('id2')
     url_prev = request.args.get('id1')
@@ -123,15 +95,13 @@ def next_article(url, list_of_tag_objects, md5_list):
             md5 = md5_list.pop()
             for tag in list_of_tag_objects:
                 tags += tag + "," + " "
-            tags = ""
-            write_data()
-            # with con:    
-            #     c = con.cursor()   
-            #     c.execute("INSERT into tags (tag_name) VALUES ('education')")
+            print "tags=", tags
+            con = lite.connect('rssfeed.db')
+            with con:    
+                cur = con.cursor()
+                cur.execute("INSERT into tags (tag_name, MD5) VALUES (?, ?)", (tags, md5,))
+                tags = ""
 
-
-
-        # save_to_database(list_of_tag_objects, url_list)
         index = article_urls.index(url)
         next_index = index + 1
         article = list_of_article_objects[next_index]
@@ -143,20 +113,6 @@ def prev_article(url):
         prev_index = index - 1
         article = list_of_article_objects[prev_index]
         return article
-
-# def save_to_database(list_of_tag_objects, url_list):
-#     if url_list != []:
-#         url = url_list.pop()
-#         cur.execute("SELECT * from feeds WHERE link = url")
-#         row = cur.fetchall()
-
-        # cur.execute("INSERT INTO tags (MD5, link, tag_name) VALUES (PK, url, 'suicide')")
-        # cur.commit()
-        # article1.tags.append(item)
-    # print "a= ", article1.tags
-    # print "b= ", list_of_tag_objects
-    
-
 
 if __name__ == "__main__":
     app.run(debug = True)
