@@ -1,86 +1,113 @@
 from flask import Flask, render_template,request
 import os
-from model import con
+# from model import con
+import sqlite3 as lite
+# import sys
+# import codecs
+
+# lite.connect(":memory:", check_same_thread = False)
+# con = lite.connect('rssfeed.db')
 
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
 
+feed_data_list = []
 
-article_data_list = []
+def read_data():
+    con = lite.connect('rssfeed.db')
+    with con:    
+        c = con.cursor()   
+        c.execute("SELECT * FROM Feeds")
+        rows = c.fetchall()
+        for row in rows: 
+            feed_data_list.append(row)
+        print rows[0]
 
-with con:    
-    cur = con.cursor()    
-    cur.execute("SELECT * FROM Feeds")
+def write_data():
+    con = lite.connect('rssfeed.db')
+    with con:    
+        cur = con.cursor()  
+        cur.execute("INSERT into tags (tag_name) VALUES (tags)")
 
-    rows = cur.fetchall()
-    for row in rows: 
-        article_data_list.append(row)
+read_data()
+# write_data()
+
+# with con:    
+#     cur = con.cursor()    
+#     cur.execute("SELECT * FROM Feeds")
+
+#     rows = cur.fetchall()
+#     for row in rows: 
+#         feed_data_list.append(row)
+#     cur.close()
 
 
 list_of_article_objects = []
 
 class Article: 
-    def __init__(self, summary_text, url):
+    def __init__(self, summary_text, url, md5):
         self.summary_text = summary_text
         self.url = url
+        self.md5 = md5
         self.tags = []
 
 
-# class Tag: 
-#     def __init__(self, tag_name):
-#         self.tag_name = tag_name
-#         self.url = url
-
 article_summarys = []
 article_urls = []
+article_md5s = []
 list_of_tag_objects = []
+md5_list = []
 
 
-for article in article_data_list:
+for article in feed_data_list:
     if article[3] is not None:
-        # summary = article[3].encode('utf-8')
         article_summarys.append(article[3])
 
     if article[0] is not None:
+        article_md5s.append(article[0])
+
+    if article[1] is not None:
         url = article[1].encode('utf-8')
         article_urls.append(url)
 
 for i in range(len(article_summarys)):
-    article = Article(article_summarys[i], article_urls[i]) # query db and create instance of Article
+    article = Article(article_summarys[i], article_urls[i], article_md5s[i]) # query db and create instance of Article
     list_of_article_objects.append(article)
 
 article0 = list_of_article_objects[0]
 
 
 @app.route('/', methods=["GET", "POST"])
-def home_page(): 
-    possible_tags1 = ["Supporting Arts & Culture", "Improving Education", "Protecting the Environment", "Animal Welfare", "Improving Health Care", "Women's Health", "Mental Health"]
-    possible_tags2 = ["Suicide Prevention", "Diseases", "Curing Cancer", "Curing Breast Cancer", "HIV & Aids", "Autism", "Children's Diseases"]
-    possible_tags3 = ["Justice", "Trafficking and Exploitation", "Increasing Jobs", "Feeding the Hungry", "Improving Nutrition", "Affordable Housing", "Disaster Relief"]
-    possible_tags4 = ["Recreation & Fitness", "At-Risk Youth", "Domestic Violence Shelters & Services", "Supporting Services for Seniors", "International Economic Development", "International Disaster Relief", "International Social Justice"]
-    possible_tags5 = ["Civil Rights & Liberties", "Women's Rights", "LGBT Rights", "Reproductive Rights", "Community Economic Development", "Advancing Science & Technology", "Services for Vets"]    
+def home_page():  
+    # write_data()
+    possible_tags1 = ["Advancing Science & Technology", "Autism", "Children's Diseases", "Curing Breast Cancer", "Curing Cancer", "Diseases", "HIV & Aids", "Improving Health Care"]
+    possible_tags2 = ["Improving Nutrition", "Mental Health", "Reproductive Rights", "Suicide Prevention", "Women's Health", "Supporting Services for Seniors", "Recreation & Fitness" ]
+    possible_tags3 = ["Affordable Housing", "At-Risk Youth", "Civil Rights & Liberties", "Community Economic Development", "Domestic Violence Shelters & Services", "Feeding the Hungry", "Increasing Jobs", "Justice"]
+    possible_tags4 = ["LGBT Rights", "Women's Rights", "Trafficking and Exploitation", "Sports", "Supporting Arts & Culture", "None of the above", "Unclear", "Skip"]
+    possible_tags5 = ["Animal Welfare", "Disaster Relief", "Improving Education", "Protecting the Environment", "International Disaster Relief", "International Economic Development", "International Social Justice", "Services for Vets"]
+    # read_data()
+
+
     url = request.args.get('id2')
     url_prev = request.args.get('id1')
+
     tag = request.form.get('id')
+
+    md5 = request.form.get('id7')
+
+    if md5 is not None:
+        md5_list.append(md5)
+
     if tag is not None:
         list_of_tag_objects.append(tag)
-
 
     if url is None and url_prev is None:
         return render_template("index.html", article=article0, first_tags=possible_tags1, second_tags=possible_tags2, third_tags=possible_tags3, fourth_tags=possible_tags4, fifth_tags=possible_tags5, list_of_tag_objects=list_of_tag_objects)
 
     else:
         if url is not None:
-            article1 = next_article(url)
-            for i in range(len(list_of_tag_objects)):
-                # item = list_of_tag_objects.pop()
-                # PK = cur.execute("SELECT MD5 from feeds WHERE link = url")
-                # cur.execute("INSERT INTO tags (MD5, link, tag_name) VALUES (PK, url, 'suicide')")
-                # cur.commit()
-                # article1.tags.append(item)
-            # print "a= ", article1.tags
-            # print "b= ", list_of_tag_objects
+            article1 = next_article(url, list_of_tag_objects, md5_list)
             return render_template("index.html", article=article1, first_tags=possible_tags1, second_tags=possible_tags2, third_tags=possible_tags3, fourth_tags=possible_tags4, fifth_tags=possible_tags5, list_of_tag_objects=list_of_tag_objects)
 
         elif url_prev is not None:
@@ -88,8 +115,23 @@ def home_page():
             return render_template("index.html", article=article1, first_tags=possible_tags1, second_tags=possible_tags2, third_tags=possible_tags3, fourth_tags=possible_tags4, fifth_tags=possible_tags5, list_of_tag_objects=list_of_tag_objects)
 
 
-def next_article(url):
+def next_article(url, list_of_tag_objects, md5_list):
+    tags = ""
     if url is not None:
+        print "md5 list =", md5_list
+        if md5_list != []:
+            md5 = md5_list.pop()
+            for tag in list_of_tag_objects:
+                tags += tag + "," + " "
+            tags = ""
+            write_data()
+            # with con:    
+            #     c = con.cursor()   
+            #     c.execute("INSERT into tags (tag_name) VALUES ('education')")
+
+
+
+        # save_to_database(list_of_tag_objects, url_list)
         index = article_urls.index(url)
         next_index = index + 1
         article = list_of_article_objects[next_index]
@@ -102,6 +144,18 @@ def prev_article(url):
         article = list_of_article_objects[prev_index]
         return article
 
+# def save_to_database(list_of_tag_objects, url_list):
+#     if url_list != []:
+#         url = url_list.pop()
+#         cur.execute("SELECT * from feeds WHERE link = url")
+#         row = cur.fetchall()
+
+        # cur.execute("INSERT INTO tags (MD5, link, tag_name) VALUES (PK, url, 'suicide')")
+        # cur.commit()
+        # article1.tags.append(item)
+    # print "a= ", article1.tags
+    # print "b= ", list_of_tag_objects
+    
 
 
 if __name__ == "__main__":

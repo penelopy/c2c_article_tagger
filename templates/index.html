@@ -1,7 +1,6 @@
 <!DOCTYPE html>
  
     <head>
-        <!-- <link rel="shortcut icon" href="../favicon.ico"> -->
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="../static/css/default.css" />
         <!-- <link rel="stylesheet" type="text/css" href="../static/css/component.css" /> -->
@@ -17,10 +16,8 @@
                 <div class="article-text"> 
                     <div class="title_and_link">
                         <h3>SUMMARY</h3>
-                        <!-- <i class="fa fa-link"></i> -->
                         <p><a href="{{ article.url}}"> {{ article.url }}</a></p>
                     </div>
-                    <!-- <p><a href="{{ article.url }}" name="{{ article.url }}">{{ article.url }}</a></p> -->
                     <p>{{ article.summary_text }}</p>
                 </div>
                 <div class="existing-tags">
@@ -47,7 +44,7 @@
 
                 <div class="tag-listings">
                     <div class="header3"> TAGS</div>
-                    <ul>
+                    <ul class="narrow">
                          {% for tag in first_tags %}
                          <li> {{ tag }} </li>
                          {% endfor %}
@@ -88,7 +85,7 @@
             // inputObj.addEventListener("blur", populateOutputField);
 
             $(document).ready(function() {
-                 var aTags =["Supporting Arts & Culture", "Improving Education", "Protecting the Environment", "Animal Welfare", "Improving Health Care", "Women's Health", "Mental Health", "Suicide Prevention", "Diseases", "Curing Cancer", "Curing Breast Cancer", "HIV & Aids", "Autism", "Children's Diseases", "Justice", "Trafficking and Exploitation", "Increasing Jobs", "Feeding the Hungry", "Improving Nutrition", "Affordable Housing", "Disaster Relief", "Recreation & Fitness", "At-Risk Youth", "Domestic Violence Shelters & Services", "Supporting Services for Seniors", "International Economic Development", "International Disaster Relief", "International Social Justice", "Civil Rights & Liberties", "Women's Rights", "LGBT Rights", "Reproductive Rights", "Community Economic Development", "Advancing Science & Technology", "Services for Vets"];
+                 var aTags =["Supporting Arts & Culture", "Improving Education", "Protecting the Environment", "Animal Welfare", "Improving Health Care", "Women's Health", "Mental Health", "Suicide Prevention", "Diseases", "Curing Cancer", "Curing Breast Cancer", "HIV & Aids", "Autism", "Children's Diseases", "Justice", "Trafficking and Exploitation", "Increasing Jobs", "Feeding the Hungry", "Improving Nutrition", "Affordable Housing", "Disaster Relief", "Recreation & Fitness", "At-Risk Youth", "Domestic Violence Shelters & Services", "Supporting Services for Seniors", "International Economic Development", "International Disaster Relief", "International Social Justice", "Civil Rights & Liberties", "Women's Rights", "LGBT Rights", "Reproductive Rights", "Community Economic Development", "Advancing Science & Technology", "Services for Vets", "Sports", "Skip", "Unclear", "None of the above"];
 
 
                 $( "#input" ).autocomplete({
@@ -106,9 +103,15 @@
             function populateOutputField(event, ui) {
                 var selectedObj = ui.item;
                 var output = selectedObj.value;
-                // console.log(selectedObj.value);
 
                 outputObj.value = output;
+
+                var md5 = "{{ article.md5 }}"
+                $.ajax({
+                  type: "POST",
+                  url: '/',
+                  data: {id7: md5}
+                });
 
                 $.ajax({
                   type: "POST",
@@ -116,19 +119,6 @@
                   data: {id: output}
                 });
             };
-
-
-            // $("#next").click(function() {
-            //     console.log("{{ article.url }}")
-            //     $.ajax({
-            //       type: "GET",
-            //       url: '/',
-            //       data: {id2: "{{ article.url }}"}
-
-            //     });
-
-            // });
-
 
 
           </script>
