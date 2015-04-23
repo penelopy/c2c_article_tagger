@@ -124,25 +124,21 @@ def skip_to_untagged_article(skip):
                 if i == 1: 
                     print "last md5", items[i]
                     md5 = items[i]
-                    # cur.execute("SELECT * FROM feeds WHERE MD5=?", md5)
-                    # cur.execute("SELECT * FROM feeds WHERE MD5='cc85d32eb4159ba2fc326a7aac8e6093'")
                     cur.execute("SELECT * FROM feeds WHERE MD5=?", (md5,))
 
-                    # select * from tags where MD5="cc85d32eb4159ba2fc326a7aac8e6093";
-
-
                     feed_row = cur.fetchall()
-                    for item in feed_row: 
-                        print "item=",item
+                    url = feed_row[0][1]
+                    # for item in feed_row: 
+                    #     print "item=",item
 
-                    for i in range(len(feed_row)):
-                        if i == 1:
-                            url = feed_row[i]
-                            print "url", url
-                            index = article_urls.index(url)
-                            print "index", index
-                            article = list_of_article_objects[index]
-                            return article
+                    # for i in range(len(feed_row)):
+                        # if i == 1:
+                    # url = feed_row[1]
+                    # print "url", url
+                    index = article_urls.index(url)
+                    print "index", index
+                    article = list_of_article_objects[index]
+                    return article
 
 
 
