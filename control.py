@@ -128,28 +128,11 @@ def skip_to_untagged_article(skip):
 
                     feed_row = cur.fetchall()
                     url = feed_row[0][1]
-                    # for item in feed_row: 
-                    #     print "item=",item
 
-                    # for i in range(len(feed_row)):
-                        # if i == 1:
-                    # url = feed_row[1]
-                    # print "url", url
                     index = article_urls.index(url)
                     print "index", index
                     article = list_of_article_objects[index]
                     return article
-
-
-
-
-            # for article in list_of_article_objects: 
-            #     md5 = article.md5
-            #     cur.execute("SELECT * FROM tags WHERE MD5=md5")
-            #     items = cur.fetchone()
-            #     for item in items: 
-            #         if item is not None:
-            #             print "zippy", item
 
 
 def next_article(url, tag_list, md5_list):
