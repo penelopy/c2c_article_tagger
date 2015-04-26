@@ -109,12 +109,24 @@
 .main{
     display: inline-block;
 }
-.existing-tags {
+.skip {
     float: right;
-    margin-right: -310px;
+    margin-right: -375px;
     margin-top: -300px;
     font-weight: bold;
     font-size: 15px;
+    width: 200px;
+    height: 200px;
+}
+
+.undo{
+    float: right;
+    margin-right: -375px;
+    margin-top: -220px;
+    font-weight: bold;
+    font-size: 15px;
+    width: 200px;
+    height: 200px;
 }
 
 /*.narrow {

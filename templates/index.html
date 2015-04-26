@@ -23,10 +23,18 @@
                     </div>
                     <p>{{ article.summary_text }}</p>
                 </div>
-                <div class="existing-tags">
+                <div class="skip">
                       <form action="/" method="get" class="form3">
                       <input type="hidden" name="id4" value='{{article.url}}'><br>
-                      <button type='submit' class="prev" id="skip">Skip to Untagged Article</button>
+                      <button type='submit' class="prev" id="skip">Jump</button>
+                    </form>   
+<!--                     <h3>EXISTING TAGS:</h3>
+                    {{ list_of_tag_objects }} -->
+                </div>
+                <div class="undo">
+                      <form action="/" method="get">
+                      <input type="hidden" name="id5" value='{{article.url}}'><br>
+                      <button type='submit' class="prev" id="skip">Undo</button>
                     </form>   
 <!--                     <h3>EXISTING TAGS:</h3>
                     {{ list_of_tag_objects }} -->
