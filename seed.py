@@ -38,26 +38,32 @@ export_data_list = []
 def export_to_tsv():
     # file = open('test.csv', 'w');
     # writer = csv.writer(file)
-    # with open('feeds.csv', 'w') as csvfile:
-    #     fieldnames = ['md5', 'title', 'summary', 'source', 'published', 'timestamp', 'crawled', 'tags']
-    #     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-    con = lite.connect('rssfeed.db')
-    with con:    
-        c = con.cursor()
-        c.execute("SELECT * FROM feeds LEFT OUTER JOIN tags ON feeds.MD5=tags.MD5")
-        rows = c.fetchall()
-        for row in rows: 
-            url = row[1].encode('utf-8') 
-            md5 = row[4]
-            print md5
+    with open('feeds.csv', 'w') as csvfile:
+        fieldnames = ['id', 'link', 'title', 'summary', 'source', 'published', 'timestamp', 'crawled', 'tags']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        con = lite.connect('rssfeed.db')
+        with con:    
+            c = con.cursor()
+            c.execute("SELECT * FROM feeds LEFT OUTER JOIN tags ON feeds.MD5=tags.MD5")
+            rows = c.fetchall()
+            for row in rows: 
+                url = row[1].encode('utf-8') 
+                title = row[2].encode('utf-8') 
+                summary = row[3].encode('utf-8') 
+                source = row[4].encode('utf-8') 
 
-            # writer.writeheader()
-            # writer.writerow({'md5': row[0], 'title': row[2], 'summary': row[3], 'source': url, 'published': })
+
+                # writer.writeheader()
+                writer.writerow({'id': row[0], 'link': url, 'title': title, 'summary': summary, 'source': source, 'published': row[5], 'timestamp': row[6], 'crawled': row[7], 'tags': row[10]})
 
             # export_data_list.append(row)
     #         writer.writerow(row)
     # file.close()
 export_to_tsv()
+
+#########
+# parse tags, save to object at some point
+
 
 
 
