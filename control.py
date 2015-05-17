@@ -3,7 +3,6 @@ import os
 import sqlite3 as lite
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY")
 
 class Article: 
     def __init__(self, summary_text, url, md5):
@@ -31,10 +30,6 @@ def read_data(): # refactor to only read-in the columns we want
             feed_data_list.append(row)
 
 read_data()
-
-
-
-
 
 
 # def process_data():
@@ -66,8 +61,10 @@ def home_page():
     md5 = request.form.get('id7')
     jump = request.args.get('id4')
     undo = request.args.get('id5')
+    print "md5 top", md5
 
     if md5 is not None:
+        print "md5 middle", md5
         md5_list.append(md5)
 
     if tag is not None:
@@ -102,7 +99,7 @@ def display_tags_on_screen():
     tags_col5 = ["Animal Welfare", "Disaster Relief", "Improving Education", "Protecting the Environment", "International Disaster Relief", "International Economic Development", "International Social Justice", "Services for Vets"]
     tag_display_list.append(tags_col1)
     tag_display_list.append(tags_col2)
-    tag_display_list.append(tags_col3)    
+    tag_display_list.append(tags_col3) 
     tag_display_list.append(tags_col4)
     tag_display_list.append(tags_col5)
     return tag_display_list
@@ -113,13 +110,17 @@ def jump_to_untagged_article():
         cur = con.cursor()
         cur.execute("SELECT * FROM tags WHERE ID = (SELECT MAX(ID) FROM tags)")
         items = cur.fetchone()
-        for i in range(len(items)): 
+        print "items", items
+        for i in range(len(items)):
             if i == 1: 
                 md5 = items[i]
+                # print "md5=", md5
                 cur.execute("SELECT * FROM feeds WHERE MD5=?", (md5,))
 
                 feed_row = cur.fetchall()
+                print "feed_row", feed_row
                 url = feed_row[0][1]
+                print "url", url
 
                 index = article_urls.index(url)
                 next_index = index + 1
@@ -128,8 +129,10 @@ def jump_to_untagged_article():
 
 def get_next_article(url, tag_list, md5_list, undo_list):
     if url is not None:
+        print 'md5 list', md5_list
         if md5_list != []:
             md5 = md5_list.pop()
+            print "md5", md5
             tags = ""
             for tag in tag_list:
                 tags += tag + "," + " "
